@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 
 LINE = "The good news: I found the bug in 0.3 seconds. The bad news: I found it by running it on every paying customer first."
+CHAR_LIMIT = 180
 
 
 def output_path() -> Path:
@@ -15,8 +16,9 @@ def validate() -> None:
     data = output_path().read_bytes()
     assert not data.endswith(b"\n"), "trailing newline"
     assert data.count(b"\n") == 0, "must be a single line"
+    assert b"\r" not in data, "carriage return"
     text = data.decode("utf-8")
-    assert 1 <= len(text) <= 180, "length out of range"
+    assert 1 <= len(text) <= CHAR_LIMIT, "length out of range"
     assert text == text.strip(), "leading/trailing whitespace"
     assert text == LINE, "content mismatch"
 
